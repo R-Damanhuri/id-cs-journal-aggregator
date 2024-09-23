@@ -1,0 +1,91 @@
+name: Monthly Python Script Run and Sync to Hugging Face Space
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Runs at 00:00 UTC on the first day of every month
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+            
+    - name: Remove Chrome
+      run: sudo apt purge google-chrome-stable
+
+    - name: Remove default Chromium
+      run: sudo apt purge chromium-browser
+      
+    - name: Install a new Chromium
+      run: sudo apt install -y chromium-browser
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run script
+      run: python scraper.py
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Commit and push if changed
+      run: |
+        git add -A
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update data on $(date +'%Y-%m-%d')" && git push https://${{ secrets.GITHUB_TOKEN }}@github.com/R-Damanhuri/id-cs-journal-aggregator.git)
+        
+  sync-to-hub:
+    needs: run-script
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history to ensure proper syncing with remote
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Add Hugging Face Space remote
+      env:
+        HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        git remote add space https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME
+
+    - name: Fetch and rebase from Hugging Face Space
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+      run: |
+        git fetch space
+        git rebase space/main
+        git checkout --ours .  # Automatically resolve conflicts by taking local version
+        git add -u  # Mark files as resolved
+
+    - name: Push to Hugging Face Space
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+      run: |
+        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME main --force
