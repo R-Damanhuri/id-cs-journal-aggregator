@@ -58,7 +58,7 @@ def scrape_journal(journal_name, journal_url):
                 "pdf" in text,
                 "link" in text,
                 text.isdigit(),
-                re.search(r'\d+\.\d+', article.text.strip())  # Skip DOI-like patterns
+                re.search(r'\b10\.\d{4,9}/\S+\b', article.text.strip())  # Skip DOI-like patterns
             ]):
                 continue
 
