@@ -1,5 +1,4 @@
 journals = {
-    'Indonesian Journal of Science and Technology (IJoST)': 'https://ejournal.upi.edu/index.php/ijost/index',
     'Register: Jurnal Ilmiah Teknologi Sistem Informasi': 'https://journal.unipdu.ac.id/index.php/register/index',
     'KINETIK: Game Technology, Information System, Computer Network, Computing, Electronics, and Control': 'https://kinetik.umm.ac.id/index.php/kinetik  ',
     'Khazanah Informatika: Jurnal Ilmu Komputer dan Informatika': 'https://journals2.ums.ac.id/index.php/khif/',
@@ -13,7 +12,6 @@ journals = {
     'JUITA: Jurnal Informatika': 'http://jurnalnasional.ump.ac.id/index.php/JUITA/index',
     'Jurnal Teknik Informatika: UINJKT': 'http://journal.uinjkt.ac.id/index.php/ti/index',
     'The Journal of Information Technology and Computer Science (JITeCS)': 'http://jitecs.ub.ac.id/index.php/jitecs/index',
-    'Jurnal Matematika, Statistika dan Komputasi (JMSK)': 'https://journal.unhas.ac.id/index.php/jmsk/index',
     'Jurnal Media Informatika Budidarma (MIB) STMIK Budi Darma': 'https://www.ejurnal.stmik-budidarma.ac.id/index.php/mib/index',
     'Sinkron : Jurnal dan Penelitian Teknik Informatika': 'https://jurnal.polgan.ac.id/index.php/sinkron/index',
     'Jurnal Informatika: Jurnal Pengembangan IT': 'http://ejournal.poltektegal.ac.id/index.php/informatika',
