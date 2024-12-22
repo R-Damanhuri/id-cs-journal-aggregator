@@ -17,7 +17,7 @@ from datasets import Dataset
 
 def scrape_journal(journal_name, journal_url):
 
-    chrome_service = Service(ChromeDriverManager(driver_version="128.0.6613.0", chrome_type=ChromeType.CHROMIUM).install())
+    chrome_service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 
     chrome_options = Options()
     options = [
